@@ -11,7 +11,7 @@
         h1 { text-align: center; font-size: 2.5rem; margin-bottom: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .login-container { max-width: 400px; margin: 100px auto; text-align: center; background: #1a1f3a; padding: 40px; border-radius: 12px; border: 1px solid #2a3150; }
         .login-btn { background: #fff; color: #000; border: none; padding: 12px 30px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; margin: 20px auto; }
-        .stats { display: flex; gap: 20px; justify-content: center; margin-bottom: 30px; }
+        .stats { display: flex; gap: 20px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
         .stat-card { background: #1a1f3a; padding: 20px 40px; border-radius: 12px; border: 1px solid #2a3150; }
         .stat-label { font-size: 0.9rem; color: #8b92b0; text-transform: uppercase; display: block; margin-bottom: 8px; }
         .stat-value { font-size: 2rem; font-weight: bold; }
@@ -26,12 +26,14 @@
         .form-group { display: flex; flex-direction: column; gap: 8px; }
         .form-group label { font-size: 0.9rem; color: #8b92b0; }
         .form-group input { background: #0f1425; border: 1px solid #2a3150; padding: 12px; border-radius: 6px; color: white; font-size: 1rem; }
+        .form-group small { font-size: 0.8rem; color: #8b92b0; font-style: italic; }
         .btn-submit { background: #10b981; color: white; border: none; padding: 14px 40px; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; }
         .table-container { background: #1a1f3a; border-radius: 12px; overflow-x: auto; border: 1px solid #2a3150; margin-bottom: 30px; }
         table { width: 100%; border-collapse: collapse; }
         th { padding: 15px; text-align: center; font-weight: 600; border-bottom: 2px solid #2a3150; color: #8b92b0; text-transform: uppercase; font-size: 0.85rem; background: #0f1425; }
         .header-fulltbet { background: #fbbf24; color: #000; }
         .header-betbra { background: #10b981; color: #000; }
+        .header-voucher { background: #a78bfa; color: #000; }
         td { padding: 15px; text-align: center; border-bottom: 1px solid #2a3150; }
         tr:hover { background: #1f2544; }
         .btn-action { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; margin: 0 5px; }
@@ -45,6 +47,16 @@
         .user-info { text-align: right; margin-bottom: 20px; color: #8b92b0; }
         #app { display: none; }
         #login { display: block; }
+        
+        /* Estilos para edição inline de stake */
+        .stake-edit-container { display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .stake-display { cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: background 0.2s; }
+        .stake-display:hover { background: #2a3150; }
+        .stake-input { background: #0f1425; border: 1px solid #667eea; padding: 8px; border-radius: 6px; color: white; font-size: 0.95rem; width: 100px; text-align: center; }
+        .stake-btn { background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; }
+        .stake-btn-cancel { background: #ef4444; }
+        .stake-edit-mode { display: flex; align-items: center; gap: 6px; }
+        .voucher-badge { background: #a78bfa; color: #000; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: 600; display: inline-block; }
     </style>
 </head>
 <body>
@@ -70,8 +82,16 @@
             <h1>⚽ Projeto 300</h1>
             <div class="stats">
                 <div class="stat-card">
-                    <span class="stat-label">P/L Total</span>
-                    <span class="stat-value" id="plTotal">R$ 0,00</span>
+                    <span class="stat-label">P/L Plataformas</span>
+                    <span class="stat-value" id="plPlataformas">R$ 0,00</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Vouchers</span>
+                    <span class="stat-value" id="vouchersTotal">R$ 0,00</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">P/L Real</span>
+                    <span class="stat-value" id="plReal">R$ 0,00</span>
                 </div>
                 <div class="stat-card">
                     <span class="stat-label">Dias</span>
@@ -120,6 +140,21 @@
                         </div>
                     </div>
                 </div>
+                <div class="form-section" style="border-left-color: #a78bfa;">
+                    <h3>🎟️ VOUCHERS DE 50%</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Quantidade de Vouchers</label>
+                            <input type="number" step="1" id="vouchers" value="0" min="0">
+                            <small>Quantos vouchers de 50% da stake você ganhou hoje?</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Valor dos Vouchers</label>
+                            <input type="text" id="vouchersValor" readonly style="background: #1a1f3a; cursor: not-allowed;">
+                            <small>Calculado automaticamente: quantidade × stake × 0.5</small>
+                        </div>
+                    </div>
+                </div>
                 <button type="submit" class="btn-submit">Salvar</button>
             </form>
             <div class="table-container">
@@ -130,7 +165,9 @@
                             <th colspan="3" class="header-fulltbet">FULLTBET</th>
                             <th colspan="3" class="header-betbra">BETBRA</th>
                             <th rowspan="2">STAKE</th>
-                            <th rowspan="2">P/L</th>
+                            <th rowspan="2">P/L PLAT.</th>
+                            <th colspan="2" class="header-voucher">VOUCHERS</th>
+                            <th rowspan="2">P/L REAL</th>
                             <th rowspan="2">AÇÕES</th>
                         </tr>
                         <tr>
@@ -140,10 +177,12 @@
                             <th>Início</th>
                             <th>Fim</th>
                             <th>P/L</th>
+                            <th>Qtd</th>
+                            <th>Valor</th>
                         </tr>
                     </thead>
                     <tbody id="tbody">
-                        <tr><td colspan="10" class="empty-state">Nenhum dia registrado</td></tr>
+                        <tr><td colspan="13" class="empty-state">Nenhum dia registrado</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -174,6 +213,7 @@
         const db = getFirestore(app);
         let currentUser = null;
         let dias = [];
+        let editingStakeId = null;
 
         // Auth functions
         window.loginWithGoogle = async () => {
@@ -207,6 +247,17 @@
             }
         });
 
+        // Atualizar valor dos vouchers em tempo real
+        document.getElementById('vouchers')?.addEventListener('input', updateVouchersValue);
+        document.getElementById('stakeDia')?.addEventListener('input', updateVouchersValue);
+
+        function updateVouchersValue() {
+            const vouchers = parseInt(document.getElementById('vouchers').value) || 0;
+            const stake = parseFloat(document.getElementById('stakeDia').value) || 0;
+            const vouchersValor = vouchers * stake * 0.5;
+            document.getElementById('vouchersValor').value = fmt(vouchersValor);
+        }
+
         // Firestore functions
         async function loadDias() {
             const q = query(
@@ -232,10 +283,13 @@
             const bfVal = document.getElementById('betbraFim').value;
             const bf = bfVal ? parseFloat(bfVal) : null;
             const stake = parseFloat(document.getElementById('stakeDia').value);
+            const vouchers = parseInt(document.getElementById('vouchers').value) || 0;
             
             const fpl = ff !== null ? ff - fi : null;
             const bpl = bf !== null ? bf - bi : null;
-            const plTotal = (fpl !== null && bpl !== null) ? fpl + bpl : null;
+            const plPlataformas = (fpl !== null && bpl !== null) ? fpl + bpl : null;
+            const vouchersValor = vouchers * stake * 0.5;
+            const plReal = plPlataformas !== null ? plPlataformas + vouchersValor : null;
 
             const editId = document.getElementById('editId').value;
 
@@ -249,7 +303,10 @@
                 bf,
                 bpl,
                 stake,
-                plTotal
+                vouchers,
+                vouchersValor,
+                plPlataformas,
+                plReal
             };
 
             try {
@@ -277,8 +334,10 @@
             document.getElementById('fulltbetFim').value = dia.ff || '';
             document.getElementById('betbraInicio').value = dia.bi;
             document.getElementById('betbraFim').value = dia.bf || '';
+            document.getElementById('vouchers').value = dia.vouchers || 0;
             document.getElementById('formTitle').textContent = 'Editar Dia';
             
+            updateVouchersValue();
             document.getElementById('form').classList.add('active');
         };
 
@@ -290,6 +349,47 @@
                 } catch (error) {
                     alert('Erro ao excluir: ' + error.message);
                 }
+            }
+        };
+
+        // Funções de edição rápida de stake
+        window.startEditStake = (id) => {
+            editingStakeId = id;
+            render();
+        };
+
+        window.cancelEditStake = () => {
+            editingStakeId = null;
+            render();
+        };
+
+        window.saveStake = async (id) => {
+            const inputElement = document.getElementById(`stake-input-${id}`);
+            const newStake = parseFloat(inputElement.value);
+            
+            if (isNaN(newStake) || newStake <= 0) {
+                alert('Por favor, insira um valor válido para a stake');
+                return;
+            }
+
+            const dia = dias.find(d => d.id === id);
+            if (!dia) return;
+
+            // Recalcular vouchers com nova stake
+            const vouchers = dia.vouchers || 0;
+            const vouchersValor = vouchers * newStake * 0.5;
+            const plReal = dia.plPlataformas !== null ? dia.plPlataformas + vouchersValor : null;
+
+            try {
+                await updateDoc(doc(db, 'dias', id), { 
+                    stake: newStake,
+                    vouchersValor,
+                    plReal
+                });
+                editingStakeId = null;
+                await loadDias();
+            } catch (error) {
+                alert('Erro ao atualizar stake: ' + error.message);
             }
         };
 
@@ -308,6 +408,8 @@
         function resetForm() {
             document.getElementById('form').reset();
             document.getElementById('editId').value = '';
+            document.getElementById('vouchers').value = '0';
+            document.getElementById('vouchersValor').value = '';
             document.getElementById('formTitle').textContent = 'Registrar Novo Dia';
         }
 
@@ -331,12 +433,12 @@
             const monthlyData = {};
             
             dias.forEach(d => {
-                if (d.plTotal !== null) {
+                if (d.plReal !== null) {
                     const monthYear = getMonthYear(d.data);
                     if (!monthlyData[monthYear]) {
                         monthlyData[monthYear] = 0;
                     }
-                    monthlyData[monthYear] += d.plTotal;
+                    monthlyData[monthYear] += d.plReal;
                 }
             });
 
@@ -366,24 +468,64 @@
                 `).join('');
         }
 
+        function renderStakeCell(d) {
+            if (editingStakeId === d.id) {
+                return `
+                    <td>
+                        <div class="stake-edit-mode">
+                            <input type="number" step="0.01" id="stake-input-${d.id}" class="stake-input" value="${d.stake}" onkeypress="if(event.key==='Enter') saveStake('${d.id}')">
+                            <button class="stake-btn" onclick="saveStake('${d.id}')">✓</button>
+                            <button class="stake-btn stake-btn-cancel" onclick="cancelEditStake()">✗</button>
+                        </div>
+                    </td>
+                `;
+            } else {
+                return `
+                    <td>
+                        <div class="stake-edit-container">
+                            <span class="stake-display" onclick="startEditStake('${d.id}')" title="Clique para editar">${fmt(d.stake)}</span>
+                        </div>
+                    </td>
+                `;
+            }
+        }
+
         function render() {
             const tbody = document.getElementById('tbody');
-            const total = dias.reduce((acc, d) => {
-                if (d.plTotal !== null) return acc + d.plTotal;
-                return acc;
-            }, 0);
             
-            document.getElementById('plTotal').textContent = fmt(total);
-            document.getElementById('plTotal').className = 'stat-value ' + (total >= 0 ? 'positive' : 'negative');
+            // Calcular totais
+            let totalPlataformas = 0;
+            let totalVouchers = 0;
+            let totalReal = 0;
+            
+            dias.forEach(d => {
+                if (d.plPlataformas !== null) totalPlataformas += d.plPlataformas;
+                if (d.vouchersValor !== null && d.vouchersValor !== undefined) totalVouchers += d.vouchersValor;
+                if (d.plReal !== null) totalReal += d.plReal;
+            });
+            
+            document.getElementById('plPlataformas').textContent = fmt(totalPlataformas);
+            document.getElementById('plPlataformas').className = 'stat-value ' + (totalPlataformas >= 0 ? 'positive' : 'negative');
+            
+            document.getElementById('vouchersTotal').textContent = fmt(totalVouchers);
+            document.getElementById('vouchersTotal').className = 'stat-value positive';
+            
+            document.getElementById('plReal').textContent = fmt(totalReal);
+            document.getElementById('plReal').className = 'stat-value ' + (totalReal >= 0 ? 'positive' : 'negative');
+            
             document.getElementById('diasCount').textContent = dias.length;
             
             if (dias.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="empty-state">Nenhum dia registrado</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="13" class="empty-state">Nenhum dia registrado</td></tr>';
                 renderMonthlySummary();
                 return;
             }
             
-            tbody.innerHTML = dias.map(d => `
+            tbody.innerHTML = dias.map(d => {
+                const vouchers = d.vouchers || 0;
+                const vouchersValor = d.vouchersValor || 0;
+                
+                return `
                 <tr>
                     <td>${fmtDate(d.data)}</td>
                     <td>${fmt(d.fi)}</td>
@@ -392,16 +534,30 @@
                     <td>${fmt(d.bi)}</td>
                     <td>${fmt(d.bf)}</td>
                     <td class="${d.bpl !== null ? (d.bpl >= 0 ? 'positive' : 'negative') : ''}">${fmt(d.bpl)}</td>
-                    <td>${fmt(d.stake)}</td>
-                    <td class="${d.plTotal !== null ? (d.plTotal >= 0 ? 'positive' : 'negative') : ''}" style="font-weight:bold;">${fmt(d.plTotal)}</td>
+                    ${renderStakeCell(d)}
+                    <td class="${d.plPlataformas !== null ? (d.plPlataformas >= 0 ? 'positive' : 'negative') : ''}" style="font-weight:bold;">${fmt(d.plPlataformas)}</td>
+                    <td>${vouchers > 0 ? '<span class="voucher-badge">' + vouchers + '</span>' : '-'}</td>
+                    <td class="positive" style="font-weight:600;">${vouchersValor > 0 ? fmt(vouchersValor) : '-'}</td>
+                    <td class="${d.plReal !== null ? (d.plReal >= 0 ? 'positive' : 'negative') : ''}" style="font-weight:bold; font-size:1.1rem;">${fmt(d.plReal)}</td>
                     <td>
                         <button class="btn-action btn-edit" onclick="editDia('${d.id}')" title="Editar">✏️</button>
                         <button class="btn-action" onclick="deleteDia('${d.id}')" title="Excluir">🗑️</button>
                     </td>
                 </tr>
-            `).join('');
+            `}).join('');
 
             renderMonthlySummary();
+            
+            // Focus no input se estiver editando
+            if (editingStakeId) {
+                setTimeout(() => {
+                    const input = document.getElementById(`stake-input-${editingStakeId}`);
+                    if (input) {
+                        input.focus();
+                        input.select();
+                    }
+                }, 50);
+            }
         }
     </script>
 </body>
