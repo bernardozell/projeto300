@@ -27,7 +27,12 @@
         .form-group label { font-size: 0.9rem; color: #8b92b0; }
         .form-group input { background: #0f1425; border: 1px solid #2a3150; padding: 12px; border-radius: 6px; color: white; font-size: 1rem; }
         .form-group input[type="date"] { color-scheme: dark; }
-        .form-group input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+        .form-group input[type="date"]::-webkit-calendar-picker-indicator { 
+            filter: invert(1) brightness(2);
+            cursor: pointer;
+            opacity: 1;
+            background: transparent;
+        }
         .form-group small { font-size: 0.8rem; color: #8b92b0; font-style: italic; }
         .btn-submit { background: #10b981; color: white; border: none; padding: 14px 40px; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; }
         .table-container { background: #1a1f3a; border-radius: 12px; overflow-x: auto; border: 1px solid #2a3150; margin-bottom: 30px; }
