@@ -37,11 +37,11 @@
         .btn-submit { background: #10b981; color: white; border: none; padding: 14px 40px; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; }
         .table-container { background: #1a1f3a; border-radius: 12px; overflow-x: auto; border: 1px solid #2a3150; margin-bottom: 30px; }
         table { width: 100%; border-collapse: collapse; }
-        th { padding: 15px; text-align: center; font-weight: 600; border-bottom: 2px solid #2a3150; color: #8b92b0; text-transform: uppercase; font-size: 0.85rem; background: #0f1425; }
+        th { padding: 8px 5px; text-align: center; font-weight: 600; border-bottom: 2px solid #2a3150; color: #8b92b0; text-transform: uppercase; font-size: 0.75rem; background: #0f1425; }
         .header-fulltbet { background: #fbbf24; color: #000; }
         .header-casab { background: #000000; color: #fbbf24; }
         .header-voucher { background: #a78bfa; color: #000; }
-        td { padding: 15px; text-align: center; border-bottom: 1px solid #2a3150; }
+        td { padding: 8px 5px; text-align: center; border-bottom: 1px solid #2a3150; font-size: 0.9rem; }
         tr:hover { background: #1f2544; }
         .btn-action { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; margin: 0 5px; display: inline-block; vertical-align: middle; }
         .btn-edit { color: #3b82f6; }
@@ -92,7 +92,6 @@
         <div class="container">
             <div class="user-info">
                 <span id="userName"></span>
-                <button class="btn-settings" onclick="openSettings()" title="Configurações">⚙️</button>
                 <button class="btn-logout" onclick="logout()">Sair</button>
             </div>
             <h1>Projeto 300</h1>
@@ -450,20 +449,6 @@
             labels[1].textContent = 'Saldo Fim';
         };
 
-        window.openSettings = () => {
-            const newCasa = prompt(
-                'Escolha sua Casa B padrão:\n\n1 - BetBra\n2 - Pinnacle\n3 - Betfair\n\nDigite o número:',
-                '1'
-            );
-            
-            const casaMap = { '1': 'betbra', '2': 'pinnacle', '3': 'betfair' };
-            if (casaMap[newCasa]) {
-                userCasaB = casaMap[newCasa];
-                document.getElementById('casaB').value = userCasaB;
-                updateCasaBSection();
-                alert('Casa B padrão atualizada para ' + casasConfig[userCasaB].name + '!');
-            }
-        };
 
         window.toggleForm = () => { 
             const form = document.getElementById('form');
