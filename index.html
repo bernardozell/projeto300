@@ -26,6 +26,8 @@
         .form-group { display: flex; flex-direction: column; gap: 8px; }
         .form-group label { font-size: 0.9rem; color: #8b92b0; }
         .form-group input { background: #0f1425; border: 1px solid #2a3150; padding: 12px; border-radius: 6px; color: white; font-size: 1rem; }
+        .form-group input[type="date"] { color-scheme: dark; }
+        .form-group input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
         .form-group small { font-size: 0.8rem; color: #8b92b0; font-style: italic; }
         .btn-submit { background: #10b981; color: white; border: none; padding: 14px 40px; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; }
         .table-container { background: #1a1f3a; border-radius: 12px; overflow-x: auto; border: 1px solid #2a3150; margin-bottom: 30px; }
@@ -36,7 +38,7 @@
         .header-voucher { background: #a78bfa; color: #000; }
         td { padding: 15px; text-align: center; border-bottom: 1px solid #2a3150; }
         tr:hover { background: #1f2544; }
-        .btn-action { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; margin: 0 5px; display: inline-block; }
+        .btn-action { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; margin: 0 5px; display: inline-block; vertical-align: middle; }
         .btn-edit { color: #3b82f6; }
         .empty-state { padding: 60px 20px; text-align: center; color: #8b92b0; }
         .monthly-summary { background: #1a1f3a; border-radius: 12px; padding: 30px; border: 1px solid #2a3150; }
@@ -57,6 +59,14 @@
         .stake-btn-cancel { background: #ef4444; }
         .stake-edit-mode { display: flex; align-items: center; gap: 6px; }
         .voucher-badge { background: #a78bfa; color: #000; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: 600; display: inline-block; }
+        .header-pinnacle { background: linear-gradient(135deg, #1e3a8a 0%, #f97316 100%); color: #fff; }
+        .header-betfair { background: linear-gradient(135deg, #000000 0%, #fbbf24 100%); color: #fff; }
+        .form-group select { background: #0f1425; border: 1px solid #2a3150; padding: 12px; border-radius: 6px; color: white; font-size: 1rem; }
+        .btn-settings { background: #667eea; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 0.9rem; cursor: pointer; }
+        .header-pinnacle { background: linear-gradient(135deg, #1e3a8a 0%, #f97316 100%); color: #fff; }
+        .header-betfair { background: linear-gradient(135deg, #000000 0%, #fbbf24 100%); color: #fff; }
+        .form-group select { background: #0f1425; border: 1px solid #2a3150; padding: 12px; border-radius: 6px; color: white; font-size: 1rem; }
+        .btn-settings { background: #667eea; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 0.9rem; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -77,6 +87,8 @@
         <div class="container">
             <div class="user-info">
                 <span id="userName"></span>
+                <button class="btn-settings" onclick="openSettings()" title="Configurações">⚙️</button>
+                <button class="btn-settings" onclick="openSettings()" title="Configurações">⚙️</button>
                 <button class="btn-logout" onclick="logout()">Sair</button>
             </div>
             <h1>Projeto 300</h1>
@@ -127,8 +139,19 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-section">
-                    <h3>🟢 BETBRA</h3>
+                                <div class="form-row">
+                    <div class="form-group">
+                        <label>Casa B (Escolha sua casa)</label>
+                        <select id="casaB" onchange="updateCasaBSection()">
+                            <option value="betbra">BetBra</option>
+                            <option value="pinnacle">Pinnacle</option>
+                            <option value="betfair">Betfair</option>
+                        </select>
+                        <small>Selecione a casa de apostas que você está usando</small>
+                    </div>
+                </div>
+<div class="form-section" id="casaBSection">
+                    <h3 id="casaBTitle">🟢 BETBRA</h3>
                     <div class="form-row">
                         <div class="form-group">
                             <label>Saldo Início</label>
@@ -163,7 +186,7 @@
                         <tr>
                             <th rowspan="2">DATA</th>
                             <th colspan="3" class="header-fulltbet">FULLTBET</th>
-                            <th colspan="3" class="header-betbra">BETBRA</th>
+                            <th colspan="3" id="tableCasaBHeader" class="header-betbra">BETBRA</th>
                             <th rowspan="2">STAKE</th>
                             <th rowspan="2">P/L PLAT.</th>
                             <th colspan="2" class="header-voucher">VOUCHERS</th>
@@ -306,6 +329,7 @@
                 vouchers,
                 vouchersValor,
                 plPlataformas,
+                casaB: userCasaB,
                 plReal
             };
 
@@ -390,6 +414,60 @@
                 await loadDias();
             } catch (error) {
                 alert('Erro ao atualizar stake: ' + error.message);
+            }
+        };
+
+        // Configuração de Casa B
+        const casasConfig = {
+            betbra: {
+                name: 'BETBRA',
+                emoji: '🟢',
+                headerClass: 'header-betbra',
+                colors: { bg: '#10b981', text: '#000' }
+            },
+            pinnacle: {
+                name: 'PINNACLE',
+                emoji: '🔵',
+                headerClass: 'header-pinnacle',
+                colors: { bg: 'linear-gradient(135deg, #1e3a8a 0%, #f97316 100%)', text: '#fff' }
+            },
+            betfair: {
+                name: 'BETFAIR',
+                emoji: '⚫',
+                headerClass: 'header-betfair',
+                colors: { bg: 'linear-gradient(135deg, #000000 0%, #fbbf24 100%)', text: '#fff' }
+            }
+        };
+
+        let userCasaB = 'betbra'; // Casa padrão
+
+        window.updateCasaBSection = () => {
+            const casaB = document.getElementById('casaB').value;
+            const config = casasConfig[casaB];
+            const title = document.getElementById('casaBTitle');
+            const section = document.getElementById('casaBSection');
+            
+            title.textContent = `${config.emoji} ${config.name}`;
+            userCasaB = casaB;
+            
+            // Atualizar labels dos inputs
+            const labels = section.querySelectorAll('label');
+            labels[0].textContent = 'Saldo Início';
+            labels[1].textContent = 'Saldo Fim';
+        };
+
+        window.openSettings = () => {
+            const newCasa = prompt(
+                'Escolha sua Casa B padrão:\n\n1 - BetBra\n2 - Pinnacle\n3 - Betfair\n\nDigite o número:',
+                '1'
+            );
+            
+            const casaMap = { '1': 'betbra', '2': 'pinnacle', '3': 'betfair' };
+            if (casaMap[newCasa]) {
+                userCasaB = casaMap[newCasa];
+                document.getElementById('casaB').value = userCasaB;
+                updateCasaBSection();
+                alert('Casa B padrão atualizada para ' + casasConfig[userCasaB].name + '!');
             }
         };
 
@@ -517,7 +595,17 @@
             
             if (dias.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="13" class="empty-state">Nenhum dia registrado</td></tr>';
-                renderMonthlySummary();
+                
+            
+            // Atualizar cabeçalho da tabela com a casa B
+            const headerCasaB = document.getElementById('tableCasaBHeader');
+            if (headerCasaB && dias.length > 0) {
+                const lastCasa = dias[0].casaB || 'betbra';
+                const config = casasConfig[lastCasa];
+                headerCasaB.textContent = config.name;
+                headerCasaB.className = config.headerClass;
+            }
+renderMonthlySummary();
                 return;
             }
             
@@ -539,7 +627,7 @@
                     <td>${vouchers > 0 ? '<span class="voucher-badge">' + vouchers + '</span>' : '-'}</td>
                     <td class="positive" style="font-weight:600;">${vouchersValor > 0 ? fmt(vouchersValor) : '-'}</td>
                     <td class="${d.plReal !== null ? (d.plReal >= 0 ? 'positive' : 'negative') : ''}" style="font-weight:bold; font-size:1.1rem;">${fmt(d.plReal)}</td>
-                    <td style="white-space: nowrap;">
+                    <td style="white-space: nowrap; padding: 8px;">
                         <button class="btn-action btn-edit" onclick="editDia('${d.id}')" title="Editar">✏️</button>
                         <button class="btn-action" onclick="deleteDia('${d.id}')" title="Excluir">🗑️</button>
                     </td>
