@@ -36,7 +36,7 @@
         .header-voucher { background: #a78bfa; color: #000; }
         td { padding: 15px; text-align: center; border-bottom: 1px solid #2a3150; }
         tr:hover { background: #1f2544; }
-        .btn-action { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; margin: 0 5px; }
+        .btn-action { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; margin: 0 5px; display: inline-block; }
         .btn-edit { color: #3b82f6; }
         .empty-state { padding: 60px 20px; text-align: center; color: #8b92b0; }
         .monthly-summary { background: #1a1f3a; border-radius: 12px; padding: 30px; border: 1px solid #2a3150; }
@@ -539,7 +539,7 @@
                     <td>${vouchers > 0 ? '<span class="voucher-badge">' + vouchers + '</span>' : '-'}</td>
                     <td class="positive" style="font-weight:600;">${vouchersValor > 0 ? fmt(vouchersValor) : '-'}</td>
                     <td class="${d.plReal !== null ? (d.plReal >= 0 ? 'positive' : 'negative') : ''}" style="font-weight:bold; font-size:1.1rem;">${fmt(d.plReal)}</td>
-                    <td>
+                    <td style="white-space: nowrap;">
                         <button class="btn-action btn-edit" onclick="editDia('${d.id}')" title="Editar">✏️</button>
                         <button class="btn-action" onclick="deleteDia('${d.id}')" title="Excluir">🗑️</button>
                     </td>
