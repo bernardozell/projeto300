@@ -39,7 +39,7 @@
         table { width: 100%; border-collapse: collapse; }
         th { padding: 15px; text-align: center; font-weight: 600; border-bottom: 2px solid #2a3150; color: #8b92b0; text-transform: uppercase; font-size: 0.85rem; background: #0f1425; }
         .header-fulltbet { background: #fbbf24; color: #000; }
-        .header-betbra { background: #10b981; color: #000; }
+        .header-casab { background: #000000; color: #fbbf24; }
         .header-voucher { background: #a78bfa; color: #000; }
         td { padding: 15px; text-align: center; border-bottom: 1px solid #2a3150; }
         tr:hover { background: #1f2544; }
@@ -93,7 +93,6 @@
             <div class="user-info">
                 <span id="userName"></span>
                 <button class="btn-settings" onclick="openSettings()" title="Configurações">⚙️</button>
-                <button class="btn-settings" onclick="openSettings()" title="Configurações">⚙️</button>
                 <button class="btn-logout" onclick="logout()">Sair</button>
             </div>
             <h1>Projeto 300</h1>
@@ -144,27 +143,17 @@
                         </div>
                     </div>
                 </div>
-                                <div class="form-row">
-                    <div class="form-group">
-                        <label>Casa B (Escolha sua casa)</label>
-                        <select id="casaB" onchange="updateCasaBSection()">
-                            <option value="betbra">BetBra</option>
-                            <option value="pinnacle">Pinnacle</option>
-                            <option value="betfair">Betfair</option>
-                        </select>
-                        <small>Selecione a casa de apostas que você está usando</small>
-                    </div>
-                </div>
-<div class="form-section" id="casaBSection">
-                    <h3 id="casaBTitle">🟢 BETBRA</h3>
+                                
+<div class="form-section">
+                    <h3>⚫ CASA B</h3>
                     <div class="form-row">
                         <div class="form-group">
                             <label>Saldo Início</label>
-                            <input type="number" step="0.01" id="betbraInicio" required>
+                            <input type="number" step="0.01" id="casaBInicio" required>
                         </div>
                         <div class="form-group">
                             <label>Saldo Fim</label>
-                            <input type="number" step="0.01" id="betbraFim">
+                            <input type="number" step="0.01" id="casaBFim">
                         </div>
                     </div>
                 </div>
@@ -191,7 +180,7 @@
                         <tr>
                             <th rowspan="2">DATA</th>
                             <th colspan="3" class="header-fulltbet">FULLTBET</th>
-                            <th colspan="3" id="tableCasaBHeader" class="header-betbra">BETBRA</th>
+                            <th colspan="3" id="tableCasaBHeader" class="header-casab">CASA B</th>
                             <th rowspan="2">STAKE</th>
                             <th rowspan="2">P/L PLAT.</th>
                             <th colspan="2" class="header-voucher">VOUCHERS</th>
@@ -307,8 +296,8 @@
             const fi = parseFloat(document.getElementById('fulltbetInicio').value);
             const ffVal = document.getElementById('fulltbetFim').value;
             const ff = ffVal ? parseFloat(ffVal) : null;
-            const bi = parseFloat(document.getElementById('betbraInicio').value);
-            const bfVal = document.getElementById('betbraFim').value;
+            const bi = parseFloat(document.getElementById('casaBInicio').value);
+            const bfVal = document.getElementById('casaBFim').value;
             const bf = bfVal ? parseFloat(bfVal) : null;
             const stake = parseFloat(document.getElementById('stakeDia').value);
             const vouchers = parseInt(document.getElementById('vouchers').value) || 0;
@@ -361,8 +350,8 @@
             document.getElementById('stakeDia').value = dia.stake;
             document.getElementById('fulltbetInicio').value = dia.fi;
             document.getElementById('fulltbetFim').value = dia.ff || '';
-            document.getElementById('betbraInicio').value = dia.bi;
-            document.getElementById('betbraFim').value = dia.bf || '';
+            document.getElementById('casaBInicio').value = dia.bi;
+            document.getElementById('casaBFim').value = dia.bf || '';
             document.getElementById('vouchers').value = dia.vouchers || 0;
             document.getElementById('formTitle').textContent = 'Editar Dia';
             
@@ -425,7 +414,7 @@
         // Configuração de Casa B
         const casasConfig = {
             betbra: {
-                name: 'BETBRA',
+                name: 'CASA B',
                 emoji: '🟢',
                 headerClass: 'header-betbra',
                 colors: { bg: '#10b981', text: '#000' }
@@ -655,4 +644,3 @@ renderMonthlySummary();
     </script>
 </body>
 </html>
-
