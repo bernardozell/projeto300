@@ -271,19 +271,19 @@
                 </div>
 
                 <div class="form-section" style="border-left-color: #f97316;">
-                    <h3>Casa B</h3>
+                    <h3>Casa B (Opcional)</h3>
                     <div class="form-row">
                         <div class="form-group">
                             <label>Mercado Casa B</label>
-                            <input type="text" id="entradaMercadoB" placeholder="Ex: Under 2.5" required>
+                            <input type="text" id="entradaMercadoB" placeholder="Ex: Under 2.5">
                         </div>
                         <div class="form-group">
                             <label>Odd Casa B</label>
-                            <input type="number" step="0.01" id="entradaOddB" required>
+                            <input type="number" step="0.01" id="entradaOddB">
                         </div>
                         <div class="form-group">
                             <label>Valor Casa B (R$)</label>
-                            <input type="number" step="0.01" id="entradaValorB" required>
+                            <input type="number" step="0.01" id="entradaValorB">
                         </div>
                     </div>
                 </div>
@@ -413,7 +413,7 @@
             const fpl = ff !== null ? ff - fi : null;
             const bpl = bf !== null ? bf - bi : null;
             const plPlataformas = (fpl !== null && bpl !== null) ? fpl + bpl : null;
-            const plReal = plPlataformas; // P/L Real = P/L das plataformas
+            const plReal = plPlataformas; // Mantido para consistência do BD
 
             const editId = document.getElementById('editId').value;
 
@@ -429,7 +429,7 @@
                 stake,
                 plPlataformas,
                 casaB: userCasaB,
-                plReal
+                plReal // Mantido
             };
 
             try {
@@ -460,7 +460,6 @@
             document.getElementById('vouchers').value = dia.vouchers || 0;
             document.getElementById('formTitle').textContent = 'Editar Dia';
             
-            // updateVouchersValue(); // <-- REMOVIDO, POIS NÃO EXISTE
             document.getElementById('form').classList.add('active');
         };
 
@@ -496,12 +495,13 @@
             }
 
             const dia = dias.find(d => d.id === id);
-            if (!dia) return            // Manter valor do voucher existente (não recalcular)
-            const plReal = dia.plPlataformas; // P/L Real = apenas P/L das plataformas (SEM vouchers)
+            if (!dia) return
+            const plReal = dia.plPlataformas; // Manter a lógica
 
             try {
                 await updateDoc(doc(db, 'dias', id), { 
-                    stake: newStake
+                    stake: newStake,
+                    plReal: plReal // Garantir que plReal seja atualizado se plPlataformas mudar
                 });
                 editingStakeId = null;
                 await loadDias();
@@ -588,7 +588,6 @@
             const monthlyData = {};
             
             dias.forEach(d => {
-                // --- ATUALIZADO PARA USAR plPlataformas ---
                 if (d.plPlataformas !== null) {
                     const monthYear = getMonthYear(d.data);
                     if (!monthlyData[monthYear]) {
@@ -669,22 +668,18 @@
             
             // Calcular totais
             let totalPlataformas = 0;
-            // totalReal removido
             
             dias.forEach(d => {
                 if (d.plPlataformas !== null) totalPlataformas += d.plPlataformas;
-                // Contagem de plReal removida
             });
             
             document.getElementById('plPlataformas').textContent = fmt(totalPlataformas);
             document.getElementById('plPlataformas').className = 'stat-value ' + (totalPlataformas >= 0 ? 'positive' : 'negative');
             
-            // Display de plReal removido
-            
             document.getElementById('diasCount').textContent = dias.length;
             
             if (dias.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="empty-state">Nenhum dia registrado</td></tr>'; // Colspan 10
+                tbody.innerHTML = '<tr><td colspan="10" class="empty-state">Nenhum dia registrado</td></tr>';
                 
             
             // Atualizar cabeçalho da tabela com a casa B
@@ -796,17 +791,21 @@ renderMonthlySummary();
             
             const data = document.getElementById('entradaData').value;
             const confronto = document.getElementById('entradaConfronto').value;
-            const mercadoA = document.getElementById('entradaMercadoA').value; // Alterado
-            const mercadoB = document.getElementById('entradaMercadoB').value; // Adicionado
+            const mercadoA = document.getElementById('entradaMercadoA').value;
+            const mercadoB = document.getElementById('entradaMercadoB').value; // Opcional
             const oddA = parseFloat(document.getElementById('entradaOddA').value);
-            const oddB = parseFloat(document.getElementById('entradaOddB').value);
-            const tipo = document.getElementById('entradaTipo').value;
             const valorA = parseFloat(document.getElementById('entradaValorA').value);
-            const valorB = parseFloat(document.getElementById('entradaValorB').value);
+            const tipo = document.getElementById('entradaTipo').value;
+
+            // --- MELHORIA: CAMPOS CASA B OPCIONAIS ---
+            const oddBVal = document.getElementById('entradaOddB').value;
+            const oddB = oddBVal ? parseFloat(oddBVal) : null;
+            const valorBVal = document.getElementById('entradaValorB').value;
+            const valorB = valorBVal ? parseFloat(valorBVal) : null;
             
-            // Validação atualizada
-            if (!data || !confronto || !mercadoA || !mercadoB || !oddA || !oddB || !valorA || !valorB) {
-                alert('Preencha todos os campos!');
+            // Validação atualizada (Campos Casa B não são mais obrigatórios)
+            if (!data || !confronto || !mercadoA || !oddA || !valorA) {
+                alert('Preencha todos os campos obrigatórios (Data, Confronto, Mercado A, Odd A, Valor A)!');
                 return;
             }
             
@@ -814,13 +813,13 @@ renderMonthlySummary();
                 userId: currentUser.uid,
                 data,
                 confronto,
-                mercadoA, // Alterado
-                mercadoB, // Adicionado
+                mercadoA,
+                mercadoB: mercadoB || null, // Salva null se vazio
                 oddA,
-                oddB,
+                oddB, // Salva null se vazio
                 tipo,
                 valorA,
-                valorB,
+                valorB, // Salva null se vazio
                 timestamp: new Date().toISOString()
             };
             
@@ -896,8 +895,8 @@ renderMonthlySummary();
                         <td>${e.oddA.toFixed(2)}</td>
                         <td>R$ ${e.valorA.toFixed(2)}</td>
                         <td style="font-weight:600;">${e.mercadoB || '-'}</td>
-                        <td>${e.oddB.toFixed(2)}</td>
-                        <td>R$ ${e.valorB.toFixed(2)}</td>
+                        <td>${e.oddB ? e.oddB.toFixed(2) : '-'}</td>
+                        <td>${e.valorB ? 'R$ ' + e.valorB.toFixed(2) : '-'}</td>
                         <td>${tipoBadge}</td>
                         <td style="white-space: nowrap; padding: 8px;">
                             <button class="btn-action btn-edit" onclick="editEntrada('${e.id}')" title="Editar">✏️</button>
@@ -917,13 +916,14 @@ renderMonthlySummary();
             
             document.getElementById('entradaData').value = entrada.data;
             document.getElementById('entradaConfronto').value = entrada.confronto;
-            document.getElementById('entradaMercadoA').value = entrada.mercadoA; // Alterado
-            document.getElementById('entradaMercadoB').value = entrada.mercadoB; // Adicionado
+            document.getElementById('entradaMercadoA').value = entrada.mercadoA;
+            // --- MELHORIA: Lida com valores nulos ao editar ---
+            document.getElementById('entradaMercadoB').value = entrada.mercadoB || '';
             document.getElementById('entradaOddA').value = entrada.oddA;
-            document.getElementById('entradaOddB').value = entrada.oddB;
+            document.getElementById('entradaOddB').value = entrada.oddB || '';
             document.getElementById('entradaTipo').value = entrada.tipo;
             document.getElementById('entradaValorA').value = entrada.valorA;
-            document.getElementById('entradaValorB').value = entrada.valorB;
+            document.getElementById('entradaValorB').value = entrada.valorB || '';
             
             document.getElementById('formEntradaTitle').textContent = 'Editar Entrada';
             document.getElementById('formEntrada').classList.add('active');
@@ -944,19 +944,23 @@ renderMonthlySummary();
 
         // Funções globais para controle de entradas (FORA do onAuthStateChanged)
         window.openFormEntrada = () => {
+            // --- CORREÇÃO DO BUG DE SOBRESCRITA ---
+            currentEntradaId = null;
             document.getElementById('formEntrada').classList.add('active');
             document.getElementById('formEntradaTitle').textContent = 'Registrar Nova Entrada';
         };
         
         window.cancelEntrada = () => {
+            // --- CORREÇÃO DO BUG DE SOBRESCRITA ---
+            currentEntradaId = null; 
             document.getElementById('formEntrada').classList.remove('active');
             document.getElementById('entradaData').value = '';
             document.getElementById('entradaConfronto').value = '';
-            document.getElementById('entradaMercadoA').value = ''; // Alterado
-            document.getElementById('entradaMercadoB').value = ''; // Adicionado
+            document.getElementById('entradaMercadoA').value = '';
+            document.getElementById('entradaMercadoB').value = '';
             document.getElementById('entradaOddA').value = '';
             document.getElementById('entradaOddB').value = '';
-            document.getElementById('entradaTipo').value = 'real'; // Resetar para o padrão
+            document.getElementById('entradaTipo').value = 'real';
             document.getElementById('entradaValorA').value = '';
             document.getElementById('entradaValorB').value = '';
         };
