@@ -28,13 +28,17 @@
         .form-group { display: flex; flex-direction: column; gap: 8px; }
         .form-group label { font-size: 0.9rem; color: #8b92b0; }
         .form-group input { background: #0f1425; border: 1px solid #2a3150; padding: 12px; border-radius: 6px; color: white; font-size: 1rem; }
-        .form-group input[type="date"] { color-scheme: dark; }
+        
+        /* --- CORREÇÃO DO ÍCONE DO CALENDÁRIO --- */
+        .form-group input[type="date"] { /* 'color-scheme: dark;' removido */ }
         .form-group input[type="date"]::-webkit-calendar-picker-indicator { 
-            filter: invert(1) brightness(2);
+            filter: invert(1); /* 'brightness(2)' removido */
             cursor: pointer;
             opacity: 1;
             background: transparent;
         }
+        /* --- FIM DA CORREÇÃO --- */
+
         .form-group small { font-size: 0.8rem; color: #8b92b0; font-style: italic; }
         .btn-submit { background: #10b981; color: white; border: none; padding: 14px 40px; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; }
         .table-container { background: #1a1f3a; border-radius: 12px; overflow-x: auto; border: 1px solid #2a3150; margin-bottom: 30px; }
@@ -244,10 +248,17 @@
             <form class="form-card" id="formEntrada" onsubmit="handleSubmitEntrada(event)">
                 <h2 id="formEntradaTitle">Registrar Nova Entrada</h2>
                 <input type="hidden" id="editEntradaId">
+                
                 <div class="form-row">
                     <div class="form-group">
                         <label>Data</label>
                         <input type="date" id="entradaData" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Confronto</label>
+                        <input type="text" id="entradaConfronto" placeholder="Ex: Time A vs Time B" required>
                     </div>
                     <div class="form-group">
                         <label>Mercado</label>
@@ -294,7 +305,7 @@
                     <thead>
                         <tr>
                             <th>DATA</th>
-                            <th>MERCADO</th>
+                            <th>CONFRONTO</th> <th>MERCADO</th>
                             <th>ODD A</th>
                             <th>ODD B</th>
                             <th>TIPO</th>
@@ -305,7 +316,7 @@
                         </tr>
                     </thead>
                     <tbody id="tbodyEntradas">
-                        <tr><td colspan="9" class="empty-state">Nenhuma entrada registrada</td></tr>
+                        <tr><td colspan="10" class="empty-state">Nenhuma entrada registrada</td></tr> 
                     </tbody>
                 </table>
             </div>
@@ -444,7 +455,7 @@
             document.getElementById('vouchers').value = dia.vouchers || 0;
             document.getElementById('formTitle').textContent = 'Editar Dia';
             
-            updateVouchersValue();
+            // updateVouchersValue(); // <-- REMOVIDO, POIS NÃO EXISTE
             document.getElementById('form').classList.add('active');
         };
 
@@ -487,6 +498,7 @@
                 await updateDoc(doc(db, 'dias', id), { 
                     stake: newStake
                 });
+                // }); // <-- ERRO DE SINTAXE REMOVIDO DAQUI
                 editingStakeId = null;
                 await loadDias();
             } catch (error) {
@@ -777,6 +789,7 @@ renderMonthlySummary();
             if (!currentUser) return;
             
             const data = document.getElementById('entradaData').value;
+            const confronto = document.getElementById('entradaConfronto').value; // ADICIONADO
             const mercado = document.getElementById('entradaMercado').value;
             const oddA = parseFloat(document.getElementById('entradaOddA').value);
             const oddB = parseFloat(document.getElementById('entradaOddB').value);
@@ -784,7 +797,8 @@ renderMonthlySummary();
             const valorA = parseFloat(document.getElementById('entradaValorA').value);
             const valorB = parseFloat(document.getElementById('entradaValorB').value);
             
-            if (!data || !mercado || !oddA || !oddB || !valorA || !valorB) {
+            // Validação atualizada
+            if (!data || !confronto || !mercado || !oddA || !oddB || !valorA || !valorB) {
                 alert('Preencha todos os campos!');
                 return;
             }
@@ -792,6 +806,7 @@ renderMonthlySummary();
             const entrada = {
                 userId: currentUser.uid,
                 data,
+                confronto, // ADICIONADO
                 mercado,
                 oddA,
                 oddB,
@@ -841,7 +856,7 @@ renderMonthlySummary();
             const tbody = document.getElementById('tbodyEntradas');
             
             if (entradas.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Nenhuma entrada registrada</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" class="empty-state">Nenhuma entrada registrada</td></tr>'; // Colspan 10
                 return;
             }
             
@@ -854,7 +869,7 @@ renderMonthlySummary();
                 return `
                     <tr>
                         <td>${e.data.split('-').reverse().join('/')}</td>
-                        <td style="font-weight:600;">${e.mercado}</td>
+                        <td style="font-weight:300;">${e.confronto || '-'}</td> <td style="font-weight:600;">${e.mercado}</td>
                         <td>${e.oddA.toFixed(2)}</td>
                         <td>${e.oddB.toFixed(2)}</td>
                         <td>${tipoBadge}</td>
@@ -878,6 +893,7 @@ renderMonthlySummary();
             currentEntradaId = id;
             
             document.getElementById('entradaData').value = entrada.data;
+            document.getElementById('entradaConfronto').value = entrada.confronto; // ADICIONADO
             document.getElementById('entradaMercado').value = entrada.mercado;
             document.getElementById('entradaOddA').value = entrada.oddA;
             document.getElementById('entradaOddB').value = entrada.oddB;
@@ -911,6 +927,7 @@ renderMonthlySummary();
         window.cancelEntrada = () => {
             document.getElementById('formEntrada').classList.remove('active');
             document.getElementById('entradaData').value = '';
+            document.getElementById('entradaConfronto').value = ''; // ADICIONADO
             document.getElementById('entradaMercado').value = '';
             document.getElementById('entradaOddA').value = '';
             document.getElementById('entradaOddB').value = '';
