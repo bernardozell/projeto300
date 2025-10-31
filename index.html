@@ -198,7 +198,10 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn-submit">Salvar</button>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn-submit">Salvar</button>
+                    <button type="button" class="btn-submit" style="background: #6b7280;" onclick="toggleForm()">Cancelar</button>
+                </div>
             </form>
             <div id="tab-dias" class="tab-content" style="display: block;">
         <div class="table-container">
@@ -457,9 +460,11 @@
             document.getElementById('fulltbetFim').value = dia.ff || '';
             document.getElementById('casaBInicio').value = dia.bi;
             document.getElementById('casaBFim').value = dia.bf || '';
-            document.getElementById('vouchers').value = dia.vouchers || 0;
-            document.getElementById('formTitle').textContent = 'Editar Dia';
             
+            // --- LINHA DO BUG REMOVIDA ---
+            // document.getElementById('vouchers').value = dia.vouchers || 0; 
+            
+            document.getElementById('formTitle').textContent = 'Editar Dia';
             document.getElementById('form').classList.add('active');
         };
 
@@ -892,15 +897,15 @@ renderMonthlySummary();
                         <td>${dataHora}</td>
                         <td style="font-weight:300;">${e.confronto || '-'}</td>
                         <td style="font-weight:600;">${e.mercadoA || '-'}</td>
-                        <td>${e.oddA.toFixed(2)}</td>
-                        <td>R$ ${e.valorA.toFixed(2)}</td>
+                        <td>${e.oddA ? e.oddA.toFixed(2) : '-'}</td>
+                        <td>${e.valorA ? 'R$ ' + e.valorA.toFixed(2) : '-'}</td>
                         <td style="font-weight:600;">${e.mercadoB || '-'}</td>
                         <td>${e.oddB ? e.oddB.toFixed(2) : '-'}</td>
                         <td>${e.valorB ? 'R$ ' + e.valorB.toFixed(2) : '-'}</td>
                         <td>${tipoBadge}</td>
                         <td style="white-space: nowrap; padding: 8px;">
                             <button class="btn-action btn-edit" onclick="editEntrada('${e.id}')" title="Editar">✏️</button>
-                            <button class="btn-action" onclick="deleteEntrada('${e.id}')" title="Excluir">🗑️</button>
+                            <button class="btn-action" onclick="deleteDia('${e.id}')" title="Excluir">🗑️</button>
                         </td>
                     </tr>
                 `;
