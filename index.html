@@ -8,7 +8,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #0a0e27; color: #fff; padding: 20px; }
         .container { max-width: 1400px; margin: 0 auto; }
-        h1 { font-size: 3rem; margin: 0; color: #8b9cdb; text-align: center; font-weight: 700; text-shadow: 0 2px 10px rgba(102, 126, 234, 0.3); letter-spacing: 2px; }
+        h1 { text-align: center; font-size: 2.5rem; margin-bottom: 20px; color: #8b9cdb; }
         .login-container { max-width: 400px; margin: 100px auto; text-align: center; background: #1a1f3a; padding: 40px; border-radius: 12px; border: 1px solid #2a3150; }
         .login-btn { background: #fff; color: #000; border: none; padding: 12px 30px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; margin: 20px auto; }
         .stats { display: flex; gap: 20px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
@@ -17,9 +17,7 @@
         .stat-value { font-size: 2rem; font-weight: bold; }
         .positive { color: #10b981; }
         .negative { color: #ef4444; }
-        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 14px 32px; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: all 0.3s; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-bottom: 20px; }
         .btn-logout { background: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 0.9rem; cursor: pointer; }
         .form-card { background: #1a1f3a; padding: 30px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #2a3150; display: none; }
         .form-card.active { display: block; }
@@ -45,28 +43,10 @@
         .header-voucher { background: #a78bfa; color: #000; }
         td { padding: 8px 5px; text-align: center; border-bottom: 1px solid #2a3150; font-size: 0.9rem; }
         tr:hover { background: #1f2544; }
-
-        tr:nth-child(even) { background: #151a2e; }
-        tr:nth-child(odd) { background: #1a1f3a; }
-
-
-        tr:nth-child(even) { background: #151a2e; }
-        tr:nth-child(odd) { background: #1a1f3a; }
-
         .btn-action { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; margin: 0 5px; display: inline-block; vertical-align: middle; }
         .btn-edit { color: #3b82f6; }
         .empty-state { padding: 60px 20px; text-align: center; color: #8b92b0; }
-        
-        
-        .monthly-summary { background: linear-gradient(135deg, #1a1f3a 0%, #2a3150 100%); border-radius: 16px; padding: 30px; border: 1px solid #3a4160; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .monthly-summary h2 { margin-bottom: 20px; color: #667eea; font-size: 1.8rem; display: flex; align-items: center; gap: 10px; }
-        .monthly-item { display: flex; justify-content: space-between; padding: 16px; background: #0f1425; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #667eea; transition: all 0.3s; }
-        .monthly-item:hover { background: #151a2e; transform: translateX(4px); }
-
-        .monthly-summary h2 { margin-bottom: 20px; color: #667eea; font-size: 1.8rem; display: flex; align-items: center; gap: 10px; }
-        .monthly-item { display: flex; justify-content: space-between; padding: 16px; background: #0f1425; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #667eea; transition: all 0.3s; }
-        .monthly-item:hover { background: #151a2e; transform: translateX(4px); }
-
+        .monthly-summary { background: #1a1f3a; border-radius: 12px; padding: 30px; border: 1px solid #2a3150; }
         .monthly-summary h2 { margin-bottom: 20px; color: #667eea; }
         .month-card { background: #0f1425; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #667eea; display: flex; justify-content: space-between; align-items: center; }
         .month-name { font-size: 1.2rem; font-weight: 600; }
@@ -92,30 +72,7 @@
         .header-betfair { background: linear-gradient(135deg, #000000 0%, #fbbf24 100%); color: #fff; }
         .form-group select { background: #0f1425; border: 1px solid #2a3150; padding: 12px; border-radius: 6px; color: white; font-size: 1rem; }
         .btn-settings { background: #667eea; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 0.9rem; cursor: pointer; }
-    
-        .tabs { display: flex; gap: 10px; margin: 30px 0 20px 0; border-bottom: 2px solid #2a3150; }
-        .tab { padding: 12px 24px; background: transparent; border: none; color: #8b92b0; cursor: pointer; font-size: 1rem; font-weight: 600; border-bottom: 3px solid transparent; transition: all 0.3s; }
-        .tab.active { color: #667eea; border-bottom-color: #667eea; }
-        .tab:hover { color: #8b9cdb; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        .stat-card { background: linear-gradient(135deg, #1a1f3a 0%, #2a3150 100%); border-radius: 16px; padding: 24px; border: 1px solid #3a4160; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s; }
-        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3); border-color: #667eea; }
-        .stat-card h3 { font-size: 0.85rem; color: #8b92b0; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
-        .stat-card .value { font-size: 2rem; font-weight: 700; margin: 0; }
-        .stat-card .value.positive { color: #10b981; }
-        .stat-card .value.negative { color: #ef4444; }
-
-        
-        .stat-card { background: linear-gradient(135deg, #1a1f3a 0%, #2a3150 100%); border-radius: 16px; padding: 24px; border: 1px solid #3a4160; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s; }
-        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3); border-color: #667eea; }
-        .stat-card h3 { font-size: 0.85rem; color: #8b92b0; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
-        .stat-card .value { font-size: 2rem; font-weight: 700; margin: 0; }
-        .stat-card .value.positive { color: #10b981; }
-        .stat-card .value.negative { color: #ef4444; }
-
-        </style>
+    </style>
 </head>
 <body>
     <!-- Login Screen -->
@@ -669,189 +626,7 @@ renderMonthlySummary();
                 }, 50);
             }
         }
-    
-        // === FUNÇÕES DE ENTRADAS ===
-        let currentEntradaId = null;
-        
-        window.switchTab = (tabName) => {
-            // Esconder todas as abas
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            
-            // Mostrar aba selecionada
-            document.getElementById(`tab-${tabName}`).classList.add('active');
-            event.target.classList.add('active');
-            
-            if (tabName === 'entradas') {
-                loadEntradas();
-            }
-        };
-        
-        window.toggleFormEntrada = () => {
-            const form = document.getElementById('formEntrada');
-            const isActive = form.classList.contains('active');
-            
-            if (isActive) {
-                form.classList.remove('active');
-                resetFormEntrada();
-            } else {
-                form.classList.add('active');
-                document.getElementById('entradaData').value = new Date().toISOString().split('T')[0];
-            }
-        };
-        
-        window.updateValorAField = () => {
-            const tipo = document.getElementById('entradaTipo').value;
-            const hint = document.getElementById('valorAHint');
-            
-            if (tipo === 'dinheiro') {
-                hint.textContent = 'Usa a stake do dia';
-            } else {
-                hint.textContent = 'Valor do voucher';
-            }
-        };
-        
-        window.saveEntrada = async () => {
-            if (!currentUser) return;
-            
-            const data = document.getElementById('entradaData').value;
-            const mercado = document.getElementById('entradaMercado').value;
-            const oddA = parseFloat(document.getElementById('entradaOddA').value);
-            const oddB = parseFloat(document.getElementById('entradaOddB').value);
-            const tipo = document.getElementById('entradaTipo').value;
-            const valorA = parseFloat(document.getElementById('entradaValorA').value);
-            const valorB = parseFloat(document.getElementById('entradaValorB').value);
-            
-            if (!data || !mercado || !oddA || !oddB || !valorA || !valorB) {
-                alert('Preencha todos os campos!');
-                return;
-            }
-            
-            const entrada = {
-                userId: currentUser.uid,
-                data,
-                mercado,
-                oddA,
-                oddB,
-                tipo,
-                valorA,
-                valorB,
-                timestamp: new Date().toISOString()
-            };
-            
-            try {
-                if (currentEntradaId) {
-                    await updateDoc(doc(db, 'entradas', currentEntradaId), entrada);
-                    alert('Entrada atualizada!');
-                } else {
-                    await addDoc(collection(db, 'entradas'), entrada);
-                    alert('Entrada salva!');
-                }
-                
-                toggleFormEntrada();
-                loadEntradas();
-            } catch (error) {
-                console.error('Erro ao salvar entrada:', error);
-                alert('Erro ao salvar entrada: ' + error.message);
-            }
-        };
-        
-        window.loadEntradas = async () => {
-            if (!currentUser) return;
-            
-            try {
-                const q = query(
-                    collection(db, 'entradas'),
-                    where('userId', '==', currentUser.uid),
-                    orderBy('data', 'desc')
-                );
-                
-                const snapshot = await getDocs(q);
-                const entradas = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
-                renderEntradas(entradas);
-            } catch (error) {
-                console.error('Erro ao carregar entradas:', error);
-            }
-        };
-        
-        function renderEntradas(entradas) {
-            const tbody = document.getElementById('entradasList');
-            
-            if (entradas.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Nenhuma entrada registrada</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = entradas.map(e => {
-                const tipoLabel = e.tipo === 'dinheiro' ? '💵 Dinheiro' : '🎟️ Voucher';
-                const tipoBadge = e.tipo === 'dinheiro' ? 
-                    '<span style="background:#10b981;color:#000;padding:4px 8px;border-radius:4px;font-size:0.8rem;font-weight:600;">' + tipoLabel + '</span>' :
-                    '<span style="background:#a78bfa;color:#000;padding:4px 8px;border-radius:4px;font-size:0.8rem;font-weight:600;">' + tipoLabel + '</span>';
-                
-                return `
-                    <tr>
-                        <td>${e.data.split('-').reverse().join('/')}</td>
-                        <td style="font-weight:600;">${e.mercado}</td>
-                        <td>${e.oddA.toFixed(2)}</td>
-                        <td>${e.oddB.toFixed(2)}</td>
-                        <td>${tipoBadge}</td>
-                        <td>R$ ${e.valorA.toFixed(2)}</td>
-                        <td>R$ ${e.valorB.toFixed(2)}</td>
-                        <td style="white-space: nowrap; padding: 8px;">
-                            <button class="btn-action btn-edit" onclick="editEntrada('${e.id}')" title="Editar">✏️</button>
-                            <button class="btn-action" onclick="deleteEntrada('${e.id}')" title="Excluir">🗑️</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-        
-        window.editEntrada = async (id) => {
-            const docSnap = await getDoc(doc(db, 'entradas', id));
-            if (!docSnap.exists()) return;
-            
-            const entrada = docSnap.data();
-            currentEntradaId = id;
-            
-            document.getElementById('entradaData').value = entrada.data;
-            document.getElementById('entradaMercado').value = entrada.mercado;
-            document.getElementById('entradaOddA').value = entrada.oddA;
-            document.getElementById('entradaOddB').value = entrada.oddB;
-            document.getElementById('entradaTipo').value = entrada.tipo;
-            document.getElementById('entradaValorA').value = entrada.valorA;
-            document.getElementById('entradaValorB').value = entrada.valorB;
-            
-            document.getElementById('formEntradaTitle').textContent = 'Editar Entrada';
-            document.getElementById('formEntrada').classList.add('active');
-        };
-        
-        window.deleteEntrada = async (id) => {
-            if (!confirm('Tem certeza que deseja excluir esta entrada?')) return;
-            
-            try {
-                await deleteDoc(doc(db, 'entradas', id));
-                alert('Entrada excluída!');
-                loadEntradas();
-            } catch (error) {
-                console.error('Erro ao excluir entrada:', error);
-                alert('Erro ao excluir entrada: ' + error.message);
-            }
-        };
-        
-        function resetFormEntrada() {
-            currentEntradaId = null;
-            document.getElementById('formEntradaTitle').textContent = 'Registrar Nova Entrada';
-            document.getElementById('entradaData').value = '';
-            document.getElementById('entradaMercado').value = '';
-            document.getElementById('entradaOddA').value = '';
-            document.getElementById('entradaOddB').value = '';
-            document.getElementById('entradaTipo').value = 'dinheiro';
-            document.getElementById('entradaValorA').value = '';
-            document.getElementById('entradaValorB').value = '';
-        }
-
-        </script>
+    </script>
 </body>
 </html>
 
