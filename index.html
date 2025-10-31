@@ -29,15 +29,12 @@
         .form-group label { font-size: 0.9rem; color: #8b92b0; }
         .form-group input { background: #0f1425; border: 1px solid #2a3150; padding: 12px; border-radius: 6px; color: white; font-size: 1rem; }
         
-        /* --- CORREÇÃO DO ÍCONE DO CALENDÁRIO --- */
-        .form-group input[type="date"] { color-scheme: dark; }
-        .form-group input[type="date"]::-webkit-calendar-picker-indicator { 
-            /* A regra 'filter' foi removida */
+        .form-group input[type="date"], .form-group input[type="datetime-local"] { color-scheme: dark; }
+        .form-group input[type="date"]::-webkit-calendar-picker-indicator, .form-group input[type="datetime-local"]::-webkit-calendar-picker-indicator { 
             cursor: pointer;
             opacity: 1;
             background: transparent;
         }
-        /* --- FIM DA CORREÇÃO --- */
 
         .form-group small { font-size: 0.8rem; color: #8b92b0; font-style: italic; }
         .btn-submit { background: #10b981; color: white; border: none; padding: 14px 40px; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; }
@@ -145,11 +142,7 @@
                     <span class="stat-label">P/L Plataformas</span>
                     <span class="stat-value" id="plPlataformas">R$ 0,00</span>
                 </div>
-
-                <div class="stat-card">
-                    <span class="stat-label">P/L Real</span>
-                    <span class="stat-value" id="plReal">R$ 0,00</span>
-                </div>
+                
                 <div class="stat-card">
                     <span class="stat-label">Dias</span>
                     <span class="stat-value" id="diasCount">0</span>
@@ -217,7 +210,6 @@
                             <th colspan="3" id="tableCasaBHeader" class="header-casab">CASA B</th>
                             <th rowspan="2">STAKE</th>
                             <th rowspan="2">P/L PLAT.</th>
-                            <th rowspan="2">P/L REAL</th>
                             <th rowspan="2">AÇÕES</th>
                         </tr>
                         <tr>
@@ -230,7 +222,7 @@
                         </tr>
                     </thead>
                     <tbody id="tbody">
-                        <tr><td colspan="11" class="empty-state">Nenhum dia registrado</td></tr>
+                        <tr><td colspan="10" class="empty-state">Nenhum dia registrado</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -251,30 +243,51 @@
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Data</label>
-                        <input type="date" id="entradaData" required>
+                        <label>Data e Hora</label>
+                        <input type="datetime-local" id="entradaData" required>
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group">
                         <label>Confronto</label>
                         <input type="text" id="entradaConfronto" placeholder="Ex: Time A vs Time B" required>
                     </div>
-                    <div class="form-group">
-                        <label>Mercado</label>
-                        <input type="text" id="entradaMercado" placeholder="Ex: Over 2.5" required>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Casa A</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mercado Casa A</label>
+                            <input type="text" id="entradaMercadoA" placeholder="Ex: Over 2.5" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Odd Casa A</label>
+                            <input type="number" step="0.01" id="entradaOddA" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Valor Casa A (R$)</label>
+                            <input type="number" step="0.01" id="entradaValorA" required>
+                        </div>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Odd Casa A</label>
-                        <input type="number" step="0.01" id="entradaOddA" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Odd Casa B</label>
-                        <input type="number" step="0.01" id="entradaOddB" required>
+
+                <div class="form-section" style="border-left-color: #f97316;">
+                    <h3>Casa B</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mercado Casa B</label>
+                            <input type="text" id="entradaMercadoB" placeholder="Ex: Under 2.5" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Odd Casa B</label>
+                            <input type="number" step="0.01" id="entradaOddB" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Valor Casa B (R$)</label>
+                            <input type="number" step="0.01" id="entradaValorB" required>
+                        </div>
                     </div>
                 </div>
+
                 <div class="form-row">
                     <div class="form-group">
                         <label>Tipo</label>
@@ -284,16 +297,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Valor Casa A (R$)</label>
-                        <input type="number" step="0.01" id="entradaValorA" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Valor Casa B (R$)</label>
-                        <input type="number" step="0.01" id="entradaValorB" required>
-                    </div>
-                </div>
+                
                 <div style="display: flex; gap: 10px;">
                     <button type="submit" class="btn-submit">Salvar</button>
                     <button type="button" class="btn-submit" style="background: #6b7280;" onclick="cancelEntrada()">Cancelar</button>
@@ -304,14 +308,15 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>DATA</th>
-                            <th>CONFRONTO</th> <th>MERCADO</th>
+                            <th>DATA/HORA</th>
+                            <th>CONFRONTO</th>
+                            <th>MERCADO A</th>
                             <th>ODD A</th>
-                            <th>ODD B</th>
-                            <th>TIPO</th>
                             <th>VALOR A</th>
+                            <th>MERCADO B</th>
+                            <th>ODD B</th>
                             <th>VALOR B</th>
-                            <th>P/L</th>
+                            <th>TIPO</th>
                             <th>AÇÕES</th>
                         </tr>
                     </thead>
@@ -498,7 +503,6 @@
                 await updateDoc(doc(db, 'dias', id), { 
                     stake: newStake
                 });
-                // }); // <-- ERRO DE SINTAXE REMOVIDO DAQUI
                 editingStakeId = null;
                 await loadDias();
             } catch (error) {
@@ -584,12 +588,13 @@
             const monthlyData = {};
             
             dias.forEach(d => {
-                if (d.plReal !== null) {
+                // --- ATUALIZADO PARA USAR plPlataformas ---
+                if (d.plPlataformas !== null) {
                     const monthYear = getMonthYear(d.data);
                     if (!monthlyData[monthYear]) {
                         monthlyData[monthYear] = 0;
                     }
-                    monthlyData[monthYear] += d.plReal;
+                    monthlyData[monthYear] += d.plPlataformas;
                 }
             });
 
@@ -664,23 +669,22 @@
             
             // Calcular totais
             let totalPlataformas = 0;
-            let totalReal = 0;
+            // totalReal removido
             
             dias.forEach(d => {
                 if (d.plPlataformas !== null) totalPlataformas += d.plPlataformas;
-                if (d.plReal !== null) totalReal += d.plReal;
+                // Contagem de plReal removida
             });
             
             document.getElementById('plPlataformas').textContent = fmt(totalPlataformas);
             document.getElementById('plPlataformas').className = 'stat-value ' + (totalPlataformas >= 0 ? 'positive' : 'negative');
             
-            document.getElementById('plReal').textContent = fmt(totalReal);
-            document.getElementById('plReal').className = 'stat-value ' + (totalReal >= 0 ? 'positive' : 'negative');
+            // Display de plReal removido
             
             document.getElementById('diasCount').textContent = dias.length;
             
             if (dias.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="13" class="empty-state">Nenhum dia registrado</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" class="empty-state">Nenhum dia registrado</td></tr>'; // Colspan 10
                 
             
             // Atualizar cabeçalho da tabela com a casa B
@@ -707,7 +711,6 @@ renderMonthlySummary();
                     <td class="${d.bpl !== null ? (d.bpl >= 0 ? 'positive' : 'negative') : ''}">${fmt(d.bpl)}</td>
                     ${renderStakeCell(d)}
                     <td class="${d.plPlataformas !== null ? (d.plPlataformas >= 0 ? 'positive' : 'negative') : ''}" style="font-weight:bold;">${fmt(d.plPlataformas)}</td>
-                    <td class="${d.plReal !== null ? (d.plReal >= 0 ? 'positive' : 'negative') : ''}" style="font-weight:bold; font-size:1.1rem;">${fmt(d.plReal)}</td>
                     <td style="white-space: nowrap; padding: 8px;">
                         <button class="btn-action btn-edit" onclick="editDia('${d.id}')" title="Editar">✏️</button>
                         <button class="btn-action" onclick="deleteDia('${d.id}')" title="Excluir">🗑️</button>
@@ -761,13 +764,14 @@ renderMonthlySummary();
             const isActive = form.classList.contains('active');
             
             if (isActive) {
-                // --- CORREÇÃO DO ERRO 'resetFormEntrada' ---
-                // Em vez de chamar uma função inexistente, chamamos a 'cancelEntrada'
-                // que já fecha o formulário E limpa os campos.
                 window.cancelEntrada();
             } else {
                 form.classList.add('active');
-                document.getElementById('entradaData').value = new Date().toISOString().split('T')[0];
+                // Define o valor padrão para data E hora local
+                const now = new Date();
+                now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); // Ajusta para o fuso horário local
+                const nowString = now.toISOString().slice(0, 16); // Formato YYYY-MM-DDTHH:MM
+                document.getElementById('entradaData').value = nowString;
             }
         };
         
@@ -791,8 +795,9 @@ renderMonthlySummary();
             if (!currentUser) return;
             
             const data = document.getElementById('entradaData').value;
-            const confronto = document.getElementById('entradaConfronto').value; // ADICIONADO
-            const mercado = document.getElementById('entradaMercado').value;
+            const confronto = document.getElementById('entradaConfronto').value;
+            const mercadoA = document.getElementById('entradaMercadoA').value; // Alterado
+            const mercadoB = document.getElementById('entradaMercadoB').value; // Adicionado
             const oddA = parseFloat(document.getElementById('entradaOddA').value);
             const oddB = parseFloat(document.getElementById('entradaOddB').value);
             const tipo = document.getElementById('entradaTipo').value;
@@ -800,7 +805,7 @@ renderMonthlySummary();
             const valorB = parseFloat(document.getElementById('entradaValorB').value);
             
             // Validação atualizada
-            if (!data || !confronto || !mercado || !oddA || !oddB || !valorA || !valorB) {
+            if (!data || !confronto || !mercadoA || !mercadoB || !oddA || !oddB || !valorA || !valorB) {
                 alert('Preencha todos os campos!');
                 return;
             }
@@ -808,8 +813,9 @@ renderMonthlySummary();
             const entrada = {
                 userId: currentUser.uid,
                 data,
-                confronto, // ADICIONADO
-                mercado,
+                confronto,
+                mercadoA, // Alterado
+                mercadoB, // Adicionado
                 oddA,
                 oddB,
                 tipo,
@@ -863,23 +869,36 @@ renderMonthlySummary();
             }
             
             tbody.innerHTML = entradas.map(e => {
-                // --- CORREÇÃO DO BUG DO VOUCHER ---
-                // Trocado 'dinheiro' por 'real' para bater com o valor salvo
                 const tipoLabel = e.tipo === 'real' ? '💵 Dinheiro' : '🎟️ Voucher';
                 const tipoBadge = e.tipo === 'real' ? 
                     '<span style="background:#10b981;color:#000;padding:4px 8px;border-radius:4px;font-size:0.8rem;font-weight:600;">' + tipoLabel + '</span>' :
                     '<span style="background:#a78bfa;color:#000;padding:4px 8px;border-radius:4px;font-size:0.8rem;font-weight:600;">' + tipoLabel + '</span>';
                 
+                // Formatação de Data/Hora
+                let dataHora = '-';
+                if (e.data) {
+                    const [date, time] = e.data.split('T');
+                    if (date && time) {
+                        const [y,m,d] = date.split('-');
+                        dataHora = `${d}/${m}/${y} ${time}`;
+                    } else {
+                        // Fallback para datas antigas sem hora
+                        const [y,m,d] = e.data.split('-');
+                        dataHora = `${d}/${m}/${y}`;
+                    }
+                }
+
                 return `
                     <tr>
-                        <td>${e.data.split('-').reverse().join('/')}</td>
-                        <td style="font-weight:300;">${e.confronto || '-'}</td> <td style="font-weight:600;">${e.mercado}</td>
+                        <td>${dataHora}</td>
+                        <td style="font-weight:300;">${e.confronto || '-'}</td>
+                        <td style="font-weight:600;">${e.mercadoA || '-'}</td>
                         <td>${e.oddA.toFixed(2)}</td>
-                        <td>${e.oddB.toFixed(2)}</td>
-                        <td>${tipoBadge}</td>
                         <td>R$ ${e.valorA.toFixed(2)}</td>
+                        <td style="font-weight:600;">${e.mercadoB || '-'}</td>
+                        <td>${e.oddB.toFixed(2)}</td>
                         <td>R$ ${e.valorB.toFixed(2)}</td>
-                        <td class="positive" style="font-weight:bold;">-</td>
+                        <td>${tipoBadge}</td>
                         <td style="white-space: nowrap; padding: 8px;">
                             <button class="btn-action btn-edit" onclick="editEntrada('${e.id}')" title="Editar">✏️</button>
                             <button class="btn-action" onclick="deleteEntrada('${e.id}')" title="Excluir">🗑️</button>
@@ -897,8 +916,9 @@ renderMonthlySummary();
             currentEntradaId = id;
             
             document.getElementById('entradaData').value = entrada.data;
-            document.getElementById('entradaConfronto').value = entrada.confronto; // ADICIONADO
-            document.getElementById('entradaMercado').value = entrada.mercado;
+            document.getElementById('entradaConfronto').value = entrada.confronto;
+            document.getElementById('entradaMercadoA').value = entrada.mercadoA; // Alterado
+            document.getElementById('entradaMercadoB').value = entrada.mercadoB; // Adicionado
             document.getElementById('entradaOddA').value = entrada.oddA;
             document.getElementById('entradaOddB').value = entrada.oddB;
             document.getElementById('entradaTipo').value = entrada.tipo;
@@ -931,11 +951,12 @@ renderMonthlySummary();
         window.cancelEntrada = () => {
             document.getElementById('formEntrada').classList.remove('active');
             document.getElementById('entradaData').value = '';
-            document.getElementById('entradaConfronto').value = ''; // ADICIONADO
-            document.getElementById('entradaMercado').value = '';
+            document.getElementById('entradaConfronto').value = '';
+            document.getElementById('entradaMercadoA').value = ''; // Alterado
+            document.getElementById('entradaMercadoB').value = ''; // Adicionado
             document.getElementById('entradaOddA').value = '';
             document.getElementById('entradaOddB').value = '';
-            document.getElementById('entradaTipo').value = '';
+            document.getElementById('entradaTipo').value = 'real'; // Resetar para o padrão
             document.getElementById('entradaValorA').value = '';
             document.getElementById('entradaValorB').value = '';
         };
