@@ -30,9 +30,9 @@
         .form-group input { background: #0f1425; border: 1px solid #2a3150; padding: 12px; border-radius: 6px; color: white; font-size: 1rem; }
         
         /* --- CORREÇÃO DO ÍCONE DO CALENDÁRIO --- */
-        .form-group input[type="date"] { /* 'color-scheme: dark;' removido */ }
+        .form-group input[type="date"] { color-scheme: dark; }
         .form-group input[type="date"]::-webkit-calendar-picker-indicator { 
-            filter: invert(1); /* 'brightness(2)' removido */
+            /* A regra 'filter' foi removida */
             cursor: pointer;
             opacity: 1;
             background: transparent;
@@ -761,8 +761,10 @@ renderMonthlySummary();
             const isActive = form.classList.contains('active');
             
             if (isActive) {
-                form.classList.remove('active');
-                resetFormEntrada();
+                // --- CORREÇÃO DO ERRO 'resetFormEntrada' ---
+                // Em vez de chamar uma função inexistente, chamamos a 'cancelEntrada'
+                // que já fecha o formulário E limpa os campos.
+                window.cancelEntrada();
             } else {
                 form.classList.add('active');
                 document.getElementById('entradaData').value = new Date().toISOString().split('T')[0];
