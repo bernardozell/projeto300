@@ -8,7 +8,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #0a0e27; color: #fff; padding: 20px; }
         .container { max-width: 1400px; margin: 0 auto; }
-        h1 { font-size: 3rem; margin: 0; color: #8b9cdb; text-align: center; font-weight: 700; text-shadow: 0 2px 10px rgba(102, 126, 234, 0.3); letter-spacing: 2px; }
+        h1 { font-size: 1.5rem; margin: 0 0 50px 0; color: #8b9cdb; text-align: center; font-weight: 700; text-shadow: 0 2px 10px rgba(102, 126, 234, 0.3); letter-spacing: 2px; }
         .login-container { max-width: 400px; margin: 100px auto; text-align: center; background: #1a1f3a; padding: 40px; border-radius: 12px; border: 1px solid #2a3150; }
         .login-btn { background: #fff; color: #000; border: none; padding: 12px 30px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; margin: 20px auto; }
         .stats { display: flex; gap: 20px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
@@ -257,13 +257,88 @@
                 <div id="monthlyCards"></div>
             </div>
         </div>
+        
+        <div id="tab-entradas" class="tab-content" style="display: none;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <button class="btn-primary" onclick="openFormEntrada()">+ Nova Entrada</button>
+            </div>
+            
+            <form class="form-card" id="formEntrada" onsubmit="handleSubmitEntrada(event)">
+                <h2 id="formEntradaTitle">Registrar Nova Entrada</h2>
+                <input type="hidden" id="editEntradaId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Data</label>
+                        <input type="date" id="entradaData" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mercado</label>
+                        <input type="text" id="entradaMercado" placeholder="Ex: Over 2.5" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Odd Casa A</label>
+                        <input type="number" step="0.01" id="entradaOddA" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Odd Casa B</label>
+                        <input type="number" step="0.01" id="entradaOddB" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tipo</label>
+                        <select id="entradaTipo" required>
+                            <option value="real">Dinheiro Real</option>
+                            <option value="voucher">Voucher</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Valor Casa A (R$)</label>
+                        <input type="number" step="0.01" id="entradaValorA" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Valor Casa B (R$)</label>
+                        <input type="number" step="0.01" id="entradaValorB" required>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn-submit">Salvar</button>
+                    <button type="button" class="btn-submit" style="background: #6b7280;" onclick="cancelEntrada()">Cancelar</button>
+                </div>
+            </form>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>DATA</th>
+                            <th>MERCADO</th>
+                            <th>ODD A</th>
+                            <th>ODD B</th>
+                            <th>TIPO</th>
+                            <th>VALOR A</th>
+                            <th>VALOR B</th>
+                            <th>P/L</th>
+                            <th>AÇÕES</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyEntradas">
+                        <tr><td colspan="9" class="empty-state">Nenhuma entrada registrada</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs, getDoc, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyDjVDzkki4uOthiih4dzWHmuC6j3tZI8yA",
@@ -355,7 +430,7 @@
             const bpl = bf !== null ? bf - bi : null;
             const plPlataformas = (fpl !== null && bpl !== null) ? fpl + bpl : null;
             const vouchersValor = vouchers * stake * 0.5;
-            const plReal = plPlataformas !== null ? plPlataformas + vouchersValor : null;
+            const plReal = plPlataformas; // P/L Real = apenas P/L das plataformas (SEM vouchers)
 
             const editId = document.getElementById('editId').value;
 
@@ -445,7 +520,7 @@
             // Recalcular vouchers com nova stake
             const vouchers = dia.vouchers || 0;
             const vouchersValor = vouchers * newStake * 0.5;
-            const plReal = dia.plPlataformas !== null ? dia.plPlataformas + vouchersValor : null;
+            const plReal = dia.plPlataformas; // P/L Real = apenas P/L das plataformas (SEM vouchers)
 
             try {
                 await updateDoc(doc(db, 'dias', id), { 
@@ -600,8 +675,13 @@
         
         function switchTab(tabName) {
             // Atualizar botões
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+                if ((tabName === 'dias' && tab.textContent.includes('Dias Registrados')) ||
+                    (tabName === 'entradas' && tab.textContent.includes('Controle de Entradas'))) {
+                    tab.classList.add('active');
+                }
+            });
             
             // Mostrar/ocultar conteúdo
             document.getElementById('tab-dias').style.display = tabName === 'dias' ? 'block' : 'none';
@@ -708,14 +788,24 @@ renderMonthlySummary();
         let currentEntradaId = null;
         
         window.switchTab = (tabName) => {
-            // Esconder todas as abas
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            // Atualizar botões das abas
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
             
-            // Mostrar aba selecionada
-            document.getElementById(`tab-${tabName}`).classList.add('active');
-            event.target.classList.add('active');
+            // Marcar botão ativo
+            const tabs = document.querySelectorAll('.tab');
+            if (tabName === 'dias') {
+                tabs[0].classList.add('active');
+            } else if (tabName === 'entradas') {
+                tabs[1].classList.add('active');
+            }
             
+            // Mostrar/ocultar conteúdo
+            document.getElementById('tab-dias').style.display = tabName === 'dias' ? 'block' : 'none';
+            document.getElementById('tab-entradas').style.display = tabName === 'entradas' ? 'block' : 'none';
+            
+            // Carregar entradas quando a aba for aberta
             if (tabName === 'entradas') {
                 loadEntradas();
             }
@@ -743,6 +833,11 @@ renderMonthlySummary();
             } else {
                 hint.textContent = 'Valor do voucher';
             }
+        };
+        
+        window.handleSubmitEntrada = async (event) => {
+            event.preventDefault();
+            await saveEntrada();
         };
         
         window.saveEntrada = async () => {
@@ -810,10 +905,10 @@ renderMonthlySummary();
         };
         
         function renderEntradas(entradas) {
-            const tbody = document.getElementById('entradasList');
+            const tbody = document.getElementById('tbodyEntradas');
             
             if (entradas.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Nenhuma entrada registrada</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Nenhuma entrada registrada</td></tr>';
                 return;
             }
             
@@ -832,6 +927,7 @@ renderMonthlySummary();
                         <td>${tipoBadge}</td>
                         <td>R$ ${e.valorA.toFixed(2)}</td>
                         <td>R$ ${e.valorB.toFixed(2)}</td>
+                        <td class="positive" style="font-weight:bold;">-</td>
                         <td style="white-space: nowrap; padding: 8px;">
                             <button class="btn-action btn-edit" onclick="editEntrada('${e.id}')" title="Editar">✏️</button>
                             <button class="btn-action" onclick="deleteEntrada('${e.id}')" title="Excluir">🗑️</button>
